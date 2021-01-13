@@ -30,15 +30,23 @@ public class DownloadPdfServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
+    Problems problems = new Problems();
+
     /* Get the right directory where all the cleaned images are */
     String cleanedDirName = request.getParameter("cleanedDir");
     if (cleanedDirName == null || cleanedDirName.equals("")) {
-      throw new ServletException("Cleaned directory name can't be empty");
+      problems.encountered("cleanedDir parameter passed to DownloadPdfServlet was null or empty",
+          "Did you arrive at this page from somewhere else than the upload image page? Please return to the homepage", true);
+      Problems.goToErrorPage(request, response, problems);
+      return;
     }
     String tmpDir = request.getServletContext().getAttribute("FILES_DIR").toString();
     File cleanedDir = new File(tmpDir + File.separator + cleanedDirName);
     if (!cleanedDir.exists() || !cleanedDir.isDirectory()) {
-      throw new ServletException("Something is wrong with the cleaned directory");
+      problems.encountered("cleanedDir passed to DownloadPdfServlet did not exist, or wasn't a directory",
+          "Perhaps you took too long to click the download button. Your cleaned images couldn't be found", true);
+      Problems.goToErrorPage(request, response, problems);
+      return;
     }
 
     /* Create a pdf document with all the images that are in this cleaned images folder */
@@ -49,20 +57,30 @@ public class DownloadPdfServlet extends HttpServlet {
     try {
       PdfWriter.getInstance(document, fos);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      problems.encountered("Could not instantiate PdfWriter - threw a DocumentException",
+          "The image to pdf converter does not seem to be working, please contact the site owner", true);
+      Problems.goToErrorPage(request, response, problems);
+      return;
     }
     document.open();
     File[] cleanedImgs = cleanedDir.listFiles();
-    if (cleanedImgs == null) throw new NotDirectoryException(cleanedDirName);
-    Arrays.sort(cleanedImgs, new AlphaNumericFileComparator());
+    if (cleanedImgs == null) {
+      problems.encountered("Could not list the files in cleanedDir, but it is a directory, so an IOException occurred",
+          "An error occurred when trying to find your cleaned images. Please contact the site owner.", true);
+      Problems.goToErrorPage(request, response, problems);
+      return;
+    }
+    Arrays.sort(cleanedImgs, new AlphaNumericFileComparator()); // Sort alphanumerically
 
     for (File imgFile : cleanedImgs) {
       Image image;
       try {
         image = Image.getInstance(imgFile.getAbsolutePath());
       } catch (Exception e) {
+        problems.encountered("Could not load the image " + imgFile.getName() + " into the pdf, continued without it", false);
         continue;
       }
+      // Scale to fit A4
       if (image.getWidth() > image.getHeight()) {
         image.scaleToFit(Float.MAX_VALUE, PageSize.A4.getHeight());
       } else {
@@ -74,6 +92,7 @@ public class DownloadPdfServlet extends HttpServlet {
       try {
         document.add(image);
       } catch (DocumentException ignored) {
+        problems.encountered("Could not load the image " + imgFile.getName() + " into the pdf, continued without it", false);
       }
     }
     document.close();

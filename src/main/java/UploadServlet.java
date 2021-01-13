@@ -26,14 +26,18 @@ public class UploadServlet extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
+    Problems problems = new Problems();
+
     // Should be .../tmpdir
     String tmpDir = request.getServletContext().getAttribute("FILES_DIR").toString();
 
     /* Clean up the tmp folder so we don't have old files lying around */
     AgeFileFilter filter = new AgeFileFilter(System.currentTimeMillis() - 20 * 1000);
     File[] children = new File(tmpDir).listFiles();
-    for (File toDelete : FileFilterUtils.filter(filter, children)) {
-      FileUtils.forceDelete(toDelete);
+    if (children != null) {
+      for (File toDelete : FileFilterUtils.filter(filter, children)) {
+        FileUtils.forceDelete(toDelete);
+      }
     }
 
     String nextFolder = String.valueOf(counter.getAndIncrement()); // next available folder
@@ -43,21 +47,37 @@ public class UploadServlet extends HttpServlet {
     if (ud.exists()) {
       FileUtils.cleanDirectory(ud);
     } else {
-      ud.mkdirs();
+      if (!ud.mkdirs()) {
+        problems.encountered("Could not create upload directory at " + ud.getAbsolutePath(),
+            "An error occurred on the server's file system, please contact the site owner", true);
+        Problems.goToErrorPage(request, response, problems);
+        return;
+      }
     }
     // Upload all files to this new folder
     String fileName;
     for (Part part : request.getParts()) {
       fileName = part.getSubmittedFileName();
-      part.write(uploadDir + File.separator + fileName);
+      try {
+        part.write(uploadDir + File.separator + fileName);
+      } catch (IOException e) {
+        problems.encountered("Could not upload file " + fileName + ", continued without it", false);
+      }
     }
     // Will usually just return "cleaned"
-    String cleanedPath = CleanerMiddleMan.cleanImagesInFolder(uploadDir);
+    String cleanedPath = CleanerMiddleMan.cleanImagesInFolder(uploadDir, problems);
+
+    if (problems.fatalProblemEncountered()) {
+      FileUtils.forceDelete(ud);
+      Problems.goToErrorPage(request, response, problems);
+      return;
+    }
 
     // New page just has a download button, which links to DownloadPdfServlet, and has the name
     // of the folder where the cleaned images are as a parameter
     RequestDispatcher rd = request.getRequestDispatcher("retrieve.jsp");
     request.setAttribute("cleanedDir", nextFolder + File.separator + cleanedPath);
+    request.setAttribute("problems", problems.getUserDescriptions());
     rd.forward(request, response);
   }
 

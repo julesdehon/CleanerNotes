@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
   Created by IntelliJ IDEA.
   User: julesdehon
@@ -13,5 +14,11 @@
 <body>
     <h1>Cool JSP forward dude :)</h1>
     <p>Click <a href="DownloadPdfServlet?cleanedDir=${cleanedDir}">here</a> to download your cleaned up pdf!</p>
+    <c:if test="${not empty problems}">
+        <h3>Some problems were encountered, but the cleaned images were still produced. These were the issues:</h3>
+        <c:forEach items="${problems}" var="problem">
+            <p>${problem}</p>
+        </c:forEach>
+    </c:if>
 </body>
 </html>
