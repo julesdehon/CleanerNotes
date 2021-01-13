@@ -1,6 +1,11 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,11 +30,46 @@ public class UploadServlet extends HttpServlet {
     for (Part part : request.getParts()) {
       part.write(uploadFilePath);
     }
-    response.getWriter().print("The file uploaded sucessfully.");
+    String cleanedPath = CleanerMiddleMan.handle(uploadFilePath);
+    try (PrintWriter writer = response.getWriter()) {
+      writer.println("<!DOCTYPE html><html>");
+      writer.println("<head>");
+      writer.println("<meta charset=\"UTF-8\" />");
+      writer.println("<title>Retrieve your cleaned image!</title>");
+      writer.println("</head>");
+      writer.println("<body>");
+
+      writer.println("Click <a href=\"UploadServlet?fileName=" + cleanedPath + "\">here</a> to download your file");
+
+      writer.println("</body>");
+      writer.println("</html>");
+    }
   }
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
+    String fileName = request.getParameter("fileName");
+    if (fileName == null || fileName.equals("")) {
+      throw new ServletException("File name can't be empty");
+    }
+    File file = new File(fileName);
+    if (!file.exists()) {
+      throw new ServletException("File doesn't exist on the server");
+    }
+    ServletContext ctx = getServletContext();
+    InputStream fis = new FileInputStream(file);
+    String mimeType = ctx.getMimeType(file.getAbsolutePath());
+    response.setContentType(mimeType != null ? mimeType : "application/octet-stream");
+    response.setContentLength((int) file.length());
+    response.setHeader("Content-Disposition", "attachment;filename=\"cleaned.jpg\"");
+    ServletOutputStream os = response.getOutputStream();
+    byte[] bufferData = new byte[1024];
+    int read = 0;
+    while ((read = fis.read(bufferData)) != -1) {
+      os.write(bufferData, 0, read);
+    }
+    os.flush();
+    os.close();
+    fis.close();
   }
 }
