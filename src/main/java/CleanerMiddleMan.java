@@ -3,16 +3,18 @@ import java.nio.file.FileSystemException;
 import java.nio.file.NotDirectoryException;
 import notecleaner.Cleaner;
 import notecleaner.OptionsBuilder;
+import org.apache.commons.io.FilenameUtils;
 import picture.Picture;
 import picture.Utils;
 
 public class CleanerMiddleMan {
 
   public static String cleanImagesInFolder(String directoryPath) throws FileSystemException {
-    File dir = new File(directoryPath);
-    File[] directoryListing = dir.listFiles();
+    File dir = new File(directoryPath); // .../tmpfiles/10234/
+    File[] directoryListing = dir.listFiles(); // All uploaded images (could be from pdf)
     if (directoryListing == null) throw new NotDirectoryException(directoryPath);
 
+    // .../tmpfiles/10234/cleaned/
     File outDir = new File(directoryPath + File.separator + "cleaned");
     if (!outDir.exists()) {
       if (!outDir.mkdirs()) {
@@ -21,7 +23,8 @@ public class CleanerMiddleMan {
       }
     }
     for (File img : directoryListing) {
-      if (img.isDirectory()) continue;
+      if (img.isDirectory()) continue; // Skip over the 'cleaned/' folder we just made
+      // Clean the picture using notecleaner library
       Picture pic = Utils.loadPicture(img.getAbsolutePath());
       if (pic == null) continue;
       Cleaner cleaner = new Cleaner(pic, OptionsBuilder.defaultOptions().create());
@@ -30,19 +33,9 @@ public class CleanerMiddleMan {
           cleaned,
           outDir
               + File.separator
-              + removeExtension(img.getName())
-              + "-cleaned.png");
+              + FilenameUtils.getBaseName(img.getAbsolutePath())
+              + "-cleaned.png"); // Save as .../tmpfiles/10234/cleaned/<img-name>-cleaned.png
     }
-    return outDir.getAbsolutePath();
-  }
-
-  private static String removeExtension(String fileName) {
-    int dotIndex = fileName.lastIndexOf('.');
-    return fileName.substring(0, dotIndex);
-  }
-
-  private static String getExtension(String fileName) {
-    int dotIndex = fileName.lastIndexOf('.');
-    return fileName.substring(dotIndex);
+    return outDir.getName(); // returns "cleaned"
   }
 }

@@ -28,20 +28,25 @@ public class DownloadPdfServlet extends HttpServlet {
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+
+    /* Get the right directory where all the cleaned images are */
     String cleanedDirName = request.getParameter("cleanedDir");
     if (cleanedDirName == null || cleanedDirName.equals("")) {
       throw new ServletException("Cleaned directory name can't be empty");
     }
-    File cleanedDir = new File(cleanedDirName);
+    String tmpDir = request.getServletContext().getAttribute("FILES_DIR").toString();
+    File cleanedDir = new File(tmpDir + File.separator + cleanedDirName);
     if (!cleanedDir.exists() || !cleanedDir.isDirectory()) {
       throw new ServletException("Something is wrong with the cleaned directory");
     }
+
+    /* Create a pdf document with all the images that are in this cleaned images folder */
     Document document = new Document(PageSize.A4, 20.0F, 20.0F, 20.0F, 150.0F);
-    String docPath = cleanedDirName + File.separator + "clean.pdf";
+    String docPath = cleanedDir.getAbsolutePath() + File.separator + "clean.pdf";
     File doc = new File(docPath);
     FileOutputStream fos = new FileOutputStream(doc);
     try {
-      PdfWriter pdfWriter = PdfWriter.getInstance(document, fos);
+      PdfWriter.getInstance(document, fos);
     } catch (DocumentException e) {
       e.printStackTrace();
     }
@@ -49,7 +54,7 @@ public class DownloadPdfServlet extends HttpServlet {
     File[] cleanedImgs = cleanedDir.listFiles();
     if (cleanedImgs == null) throw new NotDirectoryException(cleanedDirName);
     for (File imgFile : cleanedImgs) {
-      Image image = null;
+      Image image;
       try {
         image = Image.getInstance(imgFile.getAbsolutePath());
       } catch (Exception e) {
@@ -66,6 +71,7 @@ public class DownloadPdfServlet extends HttpServlet {
     }
     document.close();
 
+    /* Make the user's browser download the pdf as "cleaned.pdf" */
     ServletContext ctx = getServletContext();
     InputStream fis = new FileInputStream(doc);
     String mimeType = ctx.getMimeType(doc.getAbsolutePath());
