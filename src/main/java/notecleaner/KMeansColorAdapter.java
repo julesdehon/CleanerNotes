@@ -11,10 +11,11 @@ import picture.Color;
 
 public class KMeansColorAdapter {
 
-  public static Set<Color> getColorGroups(List<Color> foregroundColors) {
+  public static Set<Color> getColorGroups(List<Color> foregroundColors, int numGroups) {
     List<DataPoint> samples =
         foregroundColors.stream().map(KMeansColorAdapter::dpFromColor).collect(Collectors.toList());
-    Map<DataPoint, List<DataPoint>> clusters = KMeans.fit(samples, 8, 50, new EuclideanDistance());
+    Map<DataPoint, List<DataPoint>> clusters =
+        KMeans.fit(samples, numGroups, 50, new EuclideanDistance());
     return clusters.keySet().stream()
         .map(KMeansColorAdapter::colorFromDp)
         .collect(Collectors.toSet());

@@ -2,6 +2,7 @@ package notecleaner;
 
 import static notecleaner.SampleProcessor.sampleProcessorWithOptions;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import picture.Color;
@@ -24,8 +25,24 @@ public class Palette {
     SampleProcessor processor = sampleProcessorWithOptions(options);
     Color bg = processor.getBackgroundColor(sample);
     List<Color> foregroundColors = processor.getForegroundColors(sample, bg);
-    Set<Color> colorGroups = KMeansColorAdapter.getColorGroups(foregroundColors);
+    Set<Color> colorGroups =
+        KMeansColorAdapter.getColorGroups(foregroundColors, options.getNumColors());
+    if (options.isSaturate()) saturate(colorGroups);
     return new Palette(bg, colorGroups, options);
+  }
+
+  private static void saturate(Collection<Color> colorGroups) {
+    int min = 255;
+    int max = 0;
+    for (Color color : colorGroups) {
+      min = Math.min(min, Math.min(color.getRed(), Math.min(color.getGreen(), color.getBlue())));
+      max = Math.max(max, Math.max(color.getRed(), Math.max(color.getGreen(), color.getBlue())));
+    }
+    for (Color color : colorGroups) {
+      color.setRed((int) Math.round(255 * ((double) (color.getRed() - min) / (max - min))));
+      color.setGreen((int) Math.round(255 * ((double) (color.getGreen() - min) / (max - min))));
+      color.setBlue((int) Math.round(255 * ((double) (color.getBlue() - min) / (max - min))));
+    }
   }
 
   public Picture applyTo(Picture pic) {
@@ -36,7 +53,11 @@ public class Palette {
         if (Cleaner.isForegroundColor(cur, background, options)) {
           appliedTo.setPixel(i, j, new Color(closestGroup(cur, foreground)));
         } else {
-          appliedTo.setPixel(i, j, new Color(background));
+          if (options.isWhiteBackground()) {
+            appliedTo.setPixel(i, j, new Color(255, 255, 255));
+          } else {
+            appliedTo.setPixel(i, j, new Color(background));
+          }
         }
       }
     }

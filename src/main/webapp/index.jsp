@@ -14,6 +14,12 @@
 <h1>Simple Java Web App Demo</h1>
 <form method="post" action="UploadServlet" enctype="multipart/form-data">
     <input type="file" name="file" multiple="multiple" />
+    <input type="checkbox" id="whiteBG" name="whiteBG" value="white" checked>
+    <label for="whiteBG">Force background colour to white</label><br>
+    <input type="checkbox" id="saturate" name="saturate" value="saturate" checked>
+    <label for="saturate">Saturate Colours for clarity</label><br>
+    <label for="numColors">Number of output colours: </label>
+    <input type="number" id="numColors" name="numColors" min="2" max="15" value="8">
     <input type="submit" value="Upload" />
 </form>
 </body>

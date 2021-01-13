@@ -37,8 +37,7 @@ public class PicCoord {
       return false;
     }
     PicCoord picCoord = (PicCoord) o;
-    return x == picCoord.x &&
-        y == picCoord.y;
+    return x == picCoord.x && y == picCoord.y;
   }
 
   @Override

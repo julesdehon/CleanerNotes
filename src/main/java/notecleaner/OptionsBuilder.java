@@ -10,7 +10,7 @@ public class OptionsBuilder {
   private boolean whiteBackground = false;
   private boolean saturate = true;
 
-  private OptionsBuilder() { }
+  private OptionsBuilder() {}
 
   public static OptionsBuilder defaultOptions() {
     return new OptionsBuilder();
@@ -33,7 +33,8 @@ public class OptionsBuilder {
 
   public OptionsBuilder withNBitsPerChannel(int bitsPerChannel) {
     if (bitsPerChannel < 0 || bitsPerChannel > 8) {
-      System.err.println("Can't have less than 0 or more than 8 bits per channel. Using default value of 6.");
+      System.err.println(
+          "Can't have less than 0 or more than 8 bits per channel. Using default value of 6.");
       return this;
     }
     this.bitsPerChannel = bitsPerChannel;
@@ -56,7 +57,13 @@ public class OptionsBuilder {
   }
 
   public Options create() {
-    return new Options(valueThreshold, saturationThreshold, numColors, bitsPerChannel, sampleFraction,
-        whiteBackground, saturate);
+    return new Options(
+        valueThreshold,
+        saturationThreshold,
+        numColors,
+        bitsPerChannel,
+        sampleFraction,
+        whiteBackground,
+        saturate);
   }
 }

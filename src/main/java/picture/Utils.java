@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 /** A set of convenient methods to create and display Picture objects. */
 public class Utils {
 
-
   /** Hide default constructor (static methods only). */
   private Utils() {}
 
@@ -31,8 +30,8 @@ public class Utils {
   /**
    * Create a Picture object from the the image at the specified location (URL or local file).
    *
-   * @param locationString a String representing the location of the image to be loaded. This can either
-   *     be a URL, or a filesystem location.
+   * @param locationString a String representing the location of the image to be loaded. This can
+   *     either be a URL, or a filesystem location.
    * @return a Picture representing the image at the specified URL, or null if loading failed for
    *     any reason.
    */
@@ -113,7 +112,7 @@ public class Utils {
    */
   public static boolean savePicture(Picture picture, String destination) {
     try {
-      return ImageIO.write(picture.getImage(), "png", new File(destination));
+      return ImageIO.write(picture.getImage(), "jpg", new File(destination));
     } catch (IOException e) {
       return false;
     }

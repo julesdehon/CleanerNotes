@@ -9,9 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.NotDirectoryException;
 import java.util.Arrays;
-import java.util.Comparator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -35,16 +33,20 @@ public class DownloadPdfServlet extends HttpServlet {
     /* Get the right directory where all the cleaned images are */
     String cleanedDirName = request.getParameter("cleanedDir");
     if (cleanedDirName == null || cleanedDirName.equals("")) {
-      problems.encountered("cleanedDir parameter passed to DownloadPdfServlet was null or empty",
-          "Did you arrive at this page from somewhere else than the upload image page? Please return to the homepage", true);
+      problems.encountered(
+          "cleanedDir parameter passed to DownloadPdfServlet was null or empty",
+          "Did you arrive at this page from somewhere else than the upload image page? Please return to the homepage",
+          true);
       Problems.goToErrorPage(request, response, problems);
       return;
     }
     String tmpDir = request.getServletContext().getAttribute("FILES_DIR").toString();
     File cleanedDir = new File(tmpDir + File.separator + cleanedDirName);
     if (!cleanedDir.exists() || !cleanedDir.isDirectory()) {
-      problems.encountered("cleanedDir passed to DownloadPdfServlet did not exist, or wasn't a directory",
-          "Perhaps you took too long to click the download button. Your cleaned images couldn't be found", true);
+      problems.encountered(
+          "cleanedDir passed to DownloadPdfServlet did not exist, or wasn't a directory",
+          "Perhaps you took too long to click the download button. Your cleaned images couldn't be found",
+          true);
       Problems.goToErrorPage(request, response, problems);
       return;
     }
@@ -57,27 +59,32 @@ public class DownloadPdfServlet extends HttpServlet {
     try {
       PdfWriter.getInstance(document, fos);
     } catch (DocumentException e) {
-      problems.encountered("Could not instantiate PdfWriter - threw a DocumentException",
-          "The image to pdf converter does not seem to be working, please contact the site owner", true);
+      problems.encountered(
+          "Could not instantiate PdfWriter - threw a DocumentException",
+          "The image to pdf converter does not seem to be working, please contact the site owner",
+          true);
       Problems.goToErrorPage(request, response, problems);
       return;
     }
-    document.open();
     File[] cleanedImgs = cleanedDir.listFiles();
     if (cleanedImgs == null) {
-      problems.encountered("Could not list the files in cleanedDir, but it is a directory, so an IOException occurred",
-          "An error occurred when trying to find your cleaned images. Please contact the site owner.", true);
+      problems.encountered(
+          "Could not list the files in cleanedDir, but it is a directory, so an IOException occurred",
+          "An error occurred when trying to find your cleaned images. Please contact the site owner.",
+          true);
       Problems.goToErrorPage(request, response, problems);
       return;
     }
     Arrays.sort(cleanedImgs, new AlphaNumericFileComparator()); // Sort alphanumerically
-
+    document.open();
     for (File imgFile : cleanedImgs) {
       Image image;
       try {
         image = Image.getInstance(imgFile.getAbsolutePath());
       } catch (Exception e) {
-        problems.encountered("Could not load the image " + imgFile.getName() + " into the pdf, continued without it", false);
+        problems.encountered(
+            "Could not load the image " + imgFile.getName() + " into the pdf, continued without it",
+            false);
         continue;
       }
       // Scale to fit A4
@@ -86,16 +93,25 @@ public class DownloadPdfServlet extends HttpServlet {
       } else {
         image.scaleToFit(PageSize.A4.getWidth(), Float.MAX_VALUE);
       }
+
       document.setPageSize(new Rectangle(image.getScaledWidth(), image.getScaledHeight()));
       document.newPage();
       image.setAbsolutePosition(0, 0);
       try {
         document.add(image);
       } catch (DocumentException ignored) {
-        problems.encountered("Could not load the image " + imgFile.getName() + " into the pdf, continued without it", false);
+        problems.encountered(
+            "Could not load the image " + imgFile.getName() + " into the pdf, continued without it",
+            false);
       }
     }
-    document.close();
+    try {
+      document.close();
+    } catch (Exception e) {
+      document.setPageSize(PageSize.A4);
+      document.newPage();
+      document.close();
+    }
 
     /* Make the user's browser download the pdf as "cleaned.pdf" */
     ServletContext ctx = getServletContext();

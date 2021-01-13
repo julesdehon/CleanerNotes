@@ -118,9 +118,7 @@ public class Color {
       return false;
     }
     Color color = (Color) o;
-    return red == color.red &&
-        green == color.green &&
-        blue == color.blue;
+    return red == color.red && green == color.green && blue == color.blue;
   }
 
   @Override

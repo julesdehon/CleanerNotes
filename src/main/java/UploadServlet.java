@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -9,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import notecleaner.Options;
+import notecleaner.OptionsBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AgeFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -48,15 +52,27 @@ public class UploadServlet extends HttpServlet {
       FileUtils.cleanDirectory(ud);
     } else {
       if (!ud.mkdirs()) {
-        problems.encountered("Could not create upload directory at " + ud.getAbsolutePath(),
-            "An error occurred on the server's file system, please contact the site owner", true);
+        problems.encountered(
+            "Could not create upload directory at " + ud.getAbsolutePath(),
+            "An error occurred on the server's file system, please contact the site owner",
+            true);
         Problems.goToErrorPage(request, response, problems);
         return;
       }
     }
     // Upload all files to this new folder
     String fileName;
-    for (Part part : request.getParts()) {
+    List<Part> parts =
+        request.getParts().stream()
+            .filter(part -> "file".equals(part.getName()) && part.getSize() > 0)
+            .collect(Collectors.toList());
+    if (parts.isEmpty()) {
+      FileUtils.forceDelete(ud);
+      problems.encountered("You did not upload any files.", true);
+      Problems.goToErrorPage(request, response, problems);
+      return;
+    }
+    for (Part part : parts) {
       fileName = part.getSubmittedFileName();
       try {
         part.write(uploadDir + File.separator + fileName);
@@ -64,8 +80,23 @@ public class UploadServlet extends HttpServlet {
         problems.encountered("Could not upload file " + fileName + ", continued without it", false);
       }
     }
+    boolean whiteBG = request.getParameter("whiteBG") != null;
+    boolean saturate = request.getParameter("saturate") != null;
+    String numColorsStr = request.getParameter("numColors");
+    int numColors;
+    try {
+      numColors = numColorsStr != null ? Integer.parseInt(request.getParameter("numColors")) : 8;
+    } catch (NumberFormatException e) {
+      numColors = 8;
+    }
+    Options options =
+        OptionsBuilder.defaultOptions()
+            .setSaturate(saturate)
+            .setWhiteBackground(whiteBG)
+            .withNOutputColors(numColors)
+            .create();
     // Will usually just return "cleaned"
-    String cleanedPath = CleanerMiddleMan.cleanImagesInFolder(uploadDir, problems);
+    String cleanedPath = CleanerMiddleMan.cleanImagesInFolder(uploadDir, options, problems);
 
     if (problems.fatalProblemEncountered()) {
       FileUtils.forceDelete(ud);

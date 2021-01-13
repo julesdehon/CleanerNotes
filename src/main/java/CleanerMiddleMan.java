@@ -1,13 +1,14 @@
 import java.io.File;
 import notecleaner.Cleaner;
-import notecleaner.OptionsBuilder;
+import notecleaner.Options;
 import org.apache.commons.io.FilenameUtils;
 import picture.Picture;
 import picture.Utils;
 
 public class CleanerMiddleMan {
 
-  public static String cleanImagesInFolder(String directoryPath, Problems problems) {
+  public static String cleanImagesInFolder(
+      String directoryPath, Options options, Problems problems) {
     File dir = new File(directoryPath); // .../tmpfiles/10234/
     File[] directoryListing = dir.listFiles(); // All uploaded images (could be from pdf)
     if (directoryListing == null) {
@@ -41,14 +42,15 @@ public class CleanerMiddleMan {
             false);
         continue;
       }
-      Cleaner cleaner = new Cleaner(pic, OptionsBuilder.defaultOptions().create());
+      Cleaner cleaner = new Cleaner(pic, options);
       Picture cleaned;
       try {
         cleaned = cleaner.clean();
       } catch (Exception e) {
         problems.encountered(
             "Could not clean notes. If you think the site should have been able to "
-            + "clean your notes, please contact the site owner with details of the failure", true);
+                + "clean your notes, please contact the site owner with details of the failure",
+            true);
         return null;
       }
       boolean saved =
@@ -57,7 +59,7 @@ public class CleanerMiddleMan {
               outDir
                   + File.separator
                   + FilenameUtils.getBaseName(img.getAbsolutePath())
-                  + "-cleaned.png"); // Save as .../tmpfiles/10234/cleaned/<img-name>-cleaned.png
+                  + "-cleaned.jpg"); // Save as .../tmpfiles/10234/cleaned/<img-name>-cleaned.jpg
       if (!saved) {
         problems.encountered(
             "Could not save cleaned version of " + img.getName() + ". Continued without it", false);

@@ -8,8 +8,8 @@ import picture.Picture;
 
 public class Cleaner {
 
-  private Picture pic;
-  private Options options;
+  private final Picture pic;
+  private final Options options;
 
   public Cleaner(Picture pic, Options options) {
     this.pic = pic;
