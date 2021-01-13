@@ -1,4 +1,3 @@
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -10,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.NotDirectoryException;
+import java.util.Arrays;
+import java.util.Comparator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -23,9 +24,7 @@ import org.apache.commons.io.FileUtils;
 public class DownloadPdfServlet extends HttpServlet {
 
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-
-  }
+      throws ServletException, IOException {}
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -54,6 +53,8 @@ public class DownloadPdfServlet extends HttpServlet {
     document.open();
     File[] cleanedImgs = cleanedDir.listFiles();
     if (cleanedImgs == null) throw new NotDirectoryException(cleanedDirName);
+    Arrays.sort(cleanedImgs, new AlphaNumericFileComparator());
+
     for (File imgFile : cleanedImgs) {
       Image image;
       try {

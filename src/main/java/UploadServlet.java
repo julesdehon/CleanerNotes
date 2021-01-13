@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AgeFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 
 @WebServlet(name = "UploadServlet")
 @MultipartConfig(
@@ -27,6 +28,14 @@ public class UploadServlet extends HttpServlet {
 
     // Should be .../tmpdir
     String tmpDir = request.getServletContext().getAttribute("FILES_DIR").toString();
+
+    /* Clean up the tmp folder so we don't have old files lying around */
+    AgeFileFilter filter = new AgeFileFilter(System.currentTimeMillis() - 20 * 1000);
+    File[] children = new File(tmpDir).listFiles();
+    for (File toDelete : FileFilterUtils.filter(filter, children)) {
+      FileUtils.forceDelete(toDelete);
+    }
+
     String nextFolder = String.valueOf(counter.getAndIncrement()); // next available folder
     String uploadDir = tmpDir + File.separator + nextFolder;
     File ud = new File(uploadDir);
@@ -50,7 +59,6 @@ public class UploadServlet extends HttpServlet {
     RequestDispatcher rd = request.getRequestDispatcher("retrieve.jsp");
     request.setAttribute("cleanedDir", nextFolder + File.separator + cleanedPath);
     rd.forward(request, response);
-
   }
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
