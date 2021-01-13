@@ -5,16 +5,6 @@
   version="3.1">
 
   <servlet>
-    <servlet-name>MyServlet</servlet-name>
-    <servlet-class>MyServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>MyServlet</servlet-name>
-    <url-pattern>/MyServlet</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>UploadServlet</servlet-class>
   </servlet>
@@ -22,6 +12,16 @@
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
     <url-pattern>/UploadServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DownloadPdfServlet</servlet-name>
+    <servlet-class>DownloadPdfServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>DownloadPdfServlet</servlet-name>
+    <url-pattern>/DownloadPdfServlet</url-pattern>
   </servlet-mapping>
 
   <context-param>

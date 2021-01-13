@@ -13,7 +13,7 @@
 <body>
 <h1>Simple Java Web App Demo</h1>
 <form method="post" action="UploadServlet" enctype="multipart/form-data">
-    <input type="file" name="file" />
+    <input type="file" name="file" multiple="multiple" />
     <input type="submit" value="Upload" />
 </form>
 </body>
