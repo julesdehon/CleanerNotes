@@ -2,6 +2,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,9 +63,13 @@ public class DownloadPdfServlet extends HttpServlet {
       } catch (Exception e) {
         continue;
       }
-      document.setPageSize(image);
+      if (image.getWidth() > image.getHeight()) {
+        image.scaleToFit(Float.MAX_VALUE, PageSize.A4.getHeight());
+      } else {
+        image.scaleToFit(PageSize.A4.getWidth(), Float.MAX_VALUE);
+      }
+      document.setPageSize(new Rectangle(image.getScaledWidth(), image.getScaledHeight()));
       document.newPage();
-      assert image != null;
       image.setAbsolutePosition(0, 0);
       try {
         document.add(image);
