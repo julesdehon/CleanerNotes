@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -46,24 +47,10 @@ public class UploadServlet extends HttpServlet {
 
     // New page just has a download button, which links to DownloadPdfServlet, and has the name
     // of the folder where the cleaned images are as a parameter
-    try (PrintWriter writer = response.getWriter()) {
-      writer.println("<!DOCTYPE html><html>");
-      writer.println("<head>");
-      writer.println("<meta charset=\"UTF-8\" />");
-      writer.println("<title>Retrieve your cleaned image!</title>");
-      writer.println("</head>");
-      writer.println("<body>");
+    RequestDispatcher rd = request.getRequestDispatcher("retrieve.jsp");
+    request.setAttribute("cleanedDir", nextFolder + File.separator + cleanedPath);
+    rd.forward(request, response);
 
-      writer.println(
-          "Click <a href=\"DownloadPdfServlet?cleanedDir="
-              + nextFolder
-              + File.separator
-              + cleanedPath
-              + "\">here</a> to download your file");
-
-      writer.println("</body>");
-      writer.println("</html>");
-    }
   }
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

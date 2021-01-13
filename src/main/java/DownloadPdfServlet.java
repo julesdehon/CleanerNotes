@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.FileUtils;
 
 @WebServlet(name = "DownloadPdfServlet")
 public class DownloadPdfServlet extends HttpServlet {
@@ -87,5 +88,11 @@ public class DownloadPdfServlet extends HttpServlet {
     os.flush();
     os.close();
     fis.close();
+
+    /* Delete the whole directory we were just working in */
+    File uploadDir = new File(cleanedDir.getParent());
+    if (uploadDir.exists() && uploadDir.isDirectory()) {
+      FileUtils.deleteDirectory(uploadDir);
+    }
   }
 }
