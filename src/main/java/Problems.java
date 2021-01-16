@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 public class Problems {
 
   private boolean fatal;
-  private List<String> advancedDescriptions;
-  private List<String> userDescriptions;
+  private final List<String> advancedDescriptions;
+  private final List<String> userDescriptions;
 
   public Problems() {
     fatal = false;

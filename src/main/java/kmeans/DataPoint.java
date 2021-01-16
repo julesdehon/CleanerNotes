@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class DataPoint {
 
-  private int dimensions;
-  private double[] values;
+  private final int dimensions;
+  private final double[] values;
 
   public DataPoint(double[] values) {
     this.dimensions = values.length;

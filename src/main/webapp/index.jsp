@@ -5,15 +5,16 @@
   Time: 14:03
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Hello, I am a Java web app!</title>
+    <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
-<h1>Simple Java Web App Demo</h1>
-<form method="post" action="UploadServlet" enctype="multipart/form-data">
-    <input type="file" name="file" multiple="multiple" />
+<h1>CleanerNotes</h1>
+<form method="post" action="upload" enctype="multipart/form-data">
+    <input type="file" id="fileSelection" name="file" multiple="multiple" />
     <input type="checkbox" id="whiteBG" name="whiteBG" value="white" checked>
     <label for="whiteBG">Force background colour to white</label><br>
     <input type="checkbox" id="saturate" name="saturate" value="saturate" checked>

@@ -14,10 +14,6 @@ public class SampleProcessor {
     this.options = options;
   }
 
-  public static SampleProcessor defaultSampleProcessor() {
-    return new SampleProcessor(OptionsBuilder.defaultOptions().create());
-  }
-
   public static SampleProcessor sampleProcessorWithOptions(Options options) {
     return new SampleProcessor(options);
   }

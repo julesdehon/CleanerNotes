@@ -11,7 +11,7 @@
 
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
-    <url-pattern>/UploadServlet</url-pattern>
+    <url-pattern>/upload</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -21,7 +21,7 @@
 
   <servlet-mapping>
     <servlet-name>DownloadPdfServlet</servlet-name>
-    <url-pattern>/DownloadPdfServlet</url-pattern>
+    <url-pattern>/download</url-pattern>
   </servlet-mapping>
 
   <context-param>
