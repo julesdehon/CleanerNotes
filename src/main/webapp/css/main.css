@@ -1,6 +1,348 @@
+/* Standard stuff */
+
 * {
   margin: 0;
   padding: 0;
   text-align: center;
-  font-family: "Helvetica", sans-serif;
+  font-family: proxima-nova, "Helvetica", sans-serif;
+}
+
+body {
+  background-color: #fcd04b;
+}
+
+/* Top Header */
+
+#header {
+  box-sizing: border-box;
+  background: #fff;
+  height: 130px;
+  padding: 30px;
+}
+
+#header h1 {
+  font-family: cubano, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 2.5em;
+}
+
+/* Content area */
+
+#content {
+  padding: 30px;
+}
+
+/* Buttons (file upload and submit */
+/* btn btn-3 btn-3e icon-arrow-right */
+
+.btn input {
+  display:none;
+}
+
+.btn {
+  display: inline-block;
+  margin: 30px;
+  cursor: pointer;
+  color: #fff;
+  background: #fcad26;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  background: #f29e0d;
+}
+
+.btn:active {
+  background: #f58500;
+  top: 2px;
+}
+
+.btn:before {
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+  line-height: 3;
+  font-size: 140%;
+  width: 60px;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+/* Submit button */
+
+.submit-btn {
+  padding: 25px 120px 25px 60px;
+  overflow: hidden;
+  margin:20px;
+}
+
+.submit-btn::before {
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  content: '\f061';
+  left: auto;
+  right: 10px;
+  z-index: 2;
+}
+
+.submit-btn::after {
+  width: 30%;
+  height: 200%;
+  background: rgba(255,255,255,0.1);
+  right: 0;
+  top: 0;
+  margin: -5px 0 0 -5px;
+  -webkit-transform-origin: 0 0;
+  -webkit-transform: rotate(-20deg);
+  -moz-transform-origin: 0 0;
+  -moz-transform: rotate(-20deg);
+  -ms-transform-origin: 0 0;
+  -ms-transform: rotate(-20deg);
+  transform-origin: 0 0;
+  transform: rotate(-20deg);
+}
+
+.submit-btn:hover::after {
+  width: 40%;
+}
+
+/* File upload button */
+
+.fileUploadBtn {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+  padding: 25px 60px 25px 120px;
+  border-radius: 10px;
+}
+
+.fileUploadBtn:hover {
+  background: #f29e0d;
+}
+
+.fileUploadBtn:active {
+  background: #f58500;
+}
+
+.fileUploadBtn:active::before {
+  color: #f58500;
+}
+
+.fileUploadBtn:active::after {
+  left: 60px;
+}
+
+.fileUploadBtn::after {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  left: 55px;
+  top: 50%;
+  margin: -10px 0 0 -10px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.fileUploadBtn::before {
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  content: "\f1c5";
+  speak: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  background: #fff;
+  color: #fcad26;
+  z-index: 2;
+  border-radius: 10px 0 0 10px;
+}
+
+/* The checkmarks */
+
+.checkmark-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  width:200px;
+  margin: 20px auto;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color:#fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  line-height: 25px;
+}
+
+/* Hide default checkbox */
+.checkmark-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #fff;
+}
+
+/* On mouse-over, add a grey background color */
+.checkmark-container:hover input ~ .checkmark {
+  background-color: #eee;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkmark-container input:checked ~ .checkmark {
+  background-color: #fcad26;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkmark-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkmark-container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* Colour number input */
+
+#ncol-container {
+  margin: 30px auto;
+  text-align: center;
+  display: block;
+}
+
+#ncol-container h3 {
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+#ncol {
+  position: relative;
+  width: 100%;
+  max-width: 11rem;
+  margin: 10px auto;
+  padding: 0;
+  border: 0;
+}
+
+#ncol input {
+  font-size: 18px;
+  height: 4rem;
+  padding: 0 4rem;
+  border-radius: 2rem;
+  border: 0;
+  background: #fcad26;
+  color: #fff;
+  box-shadow: 0 10px 65px -10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: lighter;
+}
+
+#ncol input:focus {
+  outline: none;
+}
+
+#ncol input[type=number]::-webkit-inner-spin-button,
+#ncol input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#ncol input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#ncol button {
+  position: absolute;
+  width: 2.8rem;
+  height: 2.8rem;
+  top: 0.6rem;
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: #f58500
+  url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50"><path d="M17 25h16M67 25h16M75 17v16" fill="none" stroke="rgb(255,255,255)" stroke-width="1.5px" stroke-linecap="round" stroke-linejoin="round" /></svg>')
+  no-repeat 0 0;
+  background-size: 5.6rem 2.8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-indent: 100%;
+  border-radius: 1.4rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  opacity: 0.5;
+}
+
+#ncol button:active {
+  background-position-y: 1px;
+  box-shadow: inset 0 2px 12px -4px rgba(0,0,0,0.4);
+}
+
+#ncol button:focus {
+  outline: none;
+}
+
+#ncol button:hover {
+  opacity: 1;
+}
+
+#ncol button.sub {
+  left: 0.6rem;
+}
+
+#ncol button.add {
+  right: 0.6rem;
+  background-position-x: -2.8rem;
 }
