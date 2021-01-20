@@ -3,12 +3,22 @@
 * {
   margin: 0;
   padding: 0;
-  text-align: center;
   font-family: proxima-nova, "Helvetica", sans-serif;
 }
 
 body {
   background-color: #fcd04b;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: #fcad26;
+  font-weight: 700;
+}
+
+a:hover {
+  color: #f29e0d;
 }
 
 /* Top Header */
@@ -20,17 +30,110 @@ body {
   padding: 30px;
 }
 
-#header h1 {
+h1 {
   font-family: cubano, sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 2.5em;
 }
 
+/* Info sections */
+
+/* Info button to bring up overlay */
+#infoBtn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  border-radius: 50%;
+  background: #fcad26;
+  line-height: 50px;
+  color: #fff;
+  height: 50px;
+  width: 50px;
+  font-size: 2em;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 5;
+}
+
+#infoBtn:hover {
+  background: #f29e0d;
+}
+
+#closeInfo {
+  height: 100px;
+  width: 100px;
+  border-radius: 5px;
+  position: absolute;
+  right: 25px;
+  top:25px;
+  cursor: pointer;
+}
+
+#closeInfo::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  content: "\f00d";
+  font-size: 100px;
+  color: #fcd04b;
+  line-height: 100px;
+  text-align: center;
+}
+
+#closeInfo:hover::after {
+  color: #f29e0d;
+}
+
+#info {
+  position: fixed;
+  left: 2.5%;
+  top: 2.5%;
+  opacity: 0;
+  width: 95%;
+  height: 95%;
+  box-sizing: border-box;
+  background: #fff;
+  text-align: left;
+  z-index: -1;
+  padding: 40px;
+  overflow: auto;
+}
+
+#info h1 {
+  text-align: left;
+  font-size: 3em;
+}
+
+#info h2 {
+  font-family: cubano, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #fcad26;
+  margin-top: 20px;
+}
+
+#info p {
+  margin-bottom: 5px;
+}
+
+#info #tagline {
+  font-weight: 700;
+  font-size: 1.2em;
+}
+
+#info-container {
+  margin-right: 10%;
+}
+
 /* Content area */
 
 #content {
-  padding: 30px;
+  padding: 30px 0;
 }
 
 /* Buttons (file upload and submit */
@@ -66,6 +169,8 @@ body {
 }
 
 .btn:before {
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
   position: absolute;
   height: 100%;
   left: 0;
@@ -93,8 +198,6 @@ body {
 }
 
 .submit-btn::before {
-  font-family: "Font Awesome 5 Free", sans-serif;
-  font-weight: 900;
   content: '\f061';
   left: auto;
   right: 10px;
@@ -128,16 +231,9 @@ body {
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   transition: all 0.3s;
-  padding: 25px 60px 25px 120px;
+  padding: 25px 30px 25px 90px;
   border-radius: 10px;
-}
-
-.fileUploadBtn:hover {
-  background: #f29e0d;
-}
-
-.fileUploadBtn:active {
-  background: #f58500;
+  width:220px;
 }
 
 .fileUploadBtn:active::before {
@@ -162,8 +258,6 @@ body {
 }
 
 .fileUploadBtn::before {
-  font-family: "Font Awesome 5 Free", sans-serif;
-  font-weight: 900;
   content: "\f1c5";
   speak: none;
   font-style: normal;
@@ -223,6 +317,10 @@ body {
 /* When the checkbox is checked, add a blue background */
 .checkmark-container input:checked ~ .checkmark {
   background-color: #fcad26;
+}
+
+.checkmark-container:hover input:checked ~ .checkmark {
+  background-color: #f29e0d;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -345,4 +443,33 @@ body {
 #ncol button.add {
   right: 0.6rem;
   background-position-x: -2.8rem;
+}
+
+
+@media only screen and (max-width: 540px) {
+  #info h1 {
+    font-size: 2em;
+  }
+  #closeInfo {
+    top: 0;
+    right: 0;
+  }
+  #closeInfo::after {
+    font-size: 50px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .fileUploadBtn {
+    width: auto;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  h1 {
+    font-size: 2em;
+  }
+  #info h1 {
+    font-size: 1.5em;
+  }
 }

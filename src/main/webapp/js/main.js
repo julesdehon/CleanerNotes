@@ -58,10 +58,30 @@ class QuantityInput {
     quantity = Math.max(quantity, 1);
 
     // Output number
-    this.input.value = quantity;
+    this.input.value = String(quantity);
   }
 }
 
-let ncol = document.getElementById('ncol');
+let numColours = document.getElementById('ncol');
+numColours.changeQuantity = new QuantityInput(numColours);
 
-ncol.changeQuantity = new QuantityInput(ncol);
+let fileUpload = document.getElementById("fileUpload");
+let fileUploadTxt = document.getElementById("fileUploadTxt");
+fileUpload.onchange = function() {
+  let files = this.files;
+  if (files.length > 0) {
+    fileUploadTxt.innerHTML = files.length + " image(s) selected"
+  }
+};
+
+let infoBtn = document.getElementById("infoBtn");
+let closeInfoBtn = document.getElementById("closeInfo");
+let infoOverlay = document.getElementById("info");
+infoBtn.onclick = function() {
+  infoOverlay.style.opacity = "0.95";
+  infoOverlay.style.zIndex = "1000";
+}
+closeInfoBtn.onclick = function() {
+  infoOverlay.style.opacity = "0";
+  infoOverlay.style.zIndex = "-1";
+}
