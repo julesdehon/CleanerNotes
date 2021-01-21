@@ -20,9 +20,9 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-        <script src="js/main.js" type="module"></script>
     </head>
     <body>
+        <div id="dimmer"></div>
         <div id="header">
             <h1>CleanerNotes</h1>
         </div>
@@ -74,7 +74,7 @@
             </div>
         </div>
         <div id="content">
-            <form method="post" action="upload" enctype="multipart/form-data">
+            <form method="post" action="upload" enctype="multipart/form-data" id="uploadForm">
                 <label class="btn fileUploadBtn"><span id="fileUploadTxt">Select Files</span>
                     <input type="file" id="fileUpload" name="file" multiple="multiple" />
                 </label>
@@ -94,6 +94,33 @@
                     <input type="submit" value="Upload" />
                 </label>
             </form>
+            <div class="boxes">
+                <div class="box">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="box">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="box">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="box">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
         </div>
+        <script src="js/main.js" type="module"></script>
     </body>
 </html>

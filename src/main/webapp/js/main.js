@@ -85,3 +85,11 @@ closeInfoBtn.onclick = function() {
   infoOverlay.style.opacity = "0";
   infoOverlay.style.zIndex = "-1";
 }
+
+let uploadForm = document.getElementById("uploadForm");
+let dimmer = document.getElementById("dimmer");
+let boxes = document.getElementsByClassName("boxes")[0];
+uploadForm.onsubmit = function() {
+  dimmer.style.display = "block";
+  boxes.style.display = "block";
+}
