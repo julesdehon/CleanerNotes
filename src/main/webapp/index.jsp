@@ -10,6 +10,7 @@
     <head>
         <title>CleanerNotes</title>
         <script src="https://kit.fontawesome.com/22764d8773.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="css/home.css" />
         <link rel="stylesheet" href="css/main.css" />
         <link rel="stylesheet" href="https://use.typekit.net/ixd8bfq.css">
         <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -24,7 +25,7 @@
     <body>
         <div id="dimmer"></div>
         <div id="header">
-            <h1>CleanerNotes</h1>
+            <a href="." class="home-link"><h1>CleanerNotes</h1></a>
         </div>
         <div id="infoBtn">?</div>
         <div id="info">
